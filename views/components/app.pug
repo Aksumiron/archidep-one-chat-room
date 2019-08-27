@@ -1,0 +1,29 @@
+script#app-template(type='text/x-template')
+  .container.mb-5
+    h1.mt-3
+      .badge.badge-pill.badge-warning.float-right(v-if='status === "connecting"') connecting
+      .badge.badge-pill.badge-success.float-right(v-if='status === "connected"', @click='disconnect') connected
+      .badge.badge-pill.badge-danger.float-right(v-if='status === "disconnected"', @click='connect') disconnected
+      | One Chat Room
+
+    form(@submit='submitMessage')
+      .form-row
+        .col-12.col-md-3.col-lg-3.col-xl-2
+          input.form-control(placeholder='Name', v-model='messageAuthor')
+        .w-100.d-md-none.mb-1
+        .col-12.col-md-9.col-lg-7.col-xl-9
+          input.form-control(placeholder='Write here...', v-model='messageContents', ref='messageContentsInput')
+        .w-100.d-lg-none.mb-1
+        .col-12.col-lg-2.col-xl-1
+          button.btn.btn-primary.btn-block(type='submit', :disabled='hasErrors() || status !== "connected"') Submit
+      .alert.alert-warning.mt-2.mb-2(v-if='errors.author.blank') Name is required.
+      .alert.alert-warning.mt-2.mb-2(v-if='errors.author.tooShort || errors.author.tooLong') Name must be between 2 and 25 characters long.
+      .alert.alert-warning.mt-2.mb-2(v-if='errors.contents.tooLong')
+        | Message must be at most
+        = ' '
+        span= maxMessageLength
+        = ' '
+        | characters long.
+
+    .list-group.mt-3
+      message-item(v-for='message of messages', :message='message', :now='now', @deleted='onMessageRemoved')

@@ -1,0 +1,10 @@
+script#message-item-template(type='text/x-template')
+  .list-group-item
+    .media
+      .identicon.mr-3.border.border-dark(v-html='identicon')
+      .media-body
+        .d-flex.w-100.justify-content-between
+          h5.mb-1 {{ message.author }}
+          small {{ humanCreatedAt }}
+        button.btn.btn-danger.btn-sm.float-right(type='button', @click='remove') Delete
+        | {{ message.contents }}
